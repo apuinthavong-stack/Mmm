@@ -1,0 +1,148 @@
+-- โหลด Orion Library
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+-- สร้างหน้าต่างหลัก (Window)
+local Window = OrionLib:MakeWindow({
+    Name = "My Script Hub", 
+    HidePremium = false, 
+    SaveConfig = true, 
+    ConfigFolder = "OrionTestConfig"
+})
+
+-- ==========================================
+-- TAB 1: MAIN (ฟังก์ชันหลัก)
+-- ==========================================
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+MainTab:AddSection({
+    Name = "Automation"
+})
+
+-- ปุ่มกด (Button)
+MainTab:AddButton({
+    Name = "Click Me (Test Button)",
+    Callback = function()
+        print("Button Clicked!")
+        OrionLib:MakeNotification({
+            Name = "Success",
+            Content = "คุณกดปุ่มเรียบร้อยแล้ว!",
+            Image = "rbxassetid://4483345998",
+            Time = 3
+        })
+    end    
+})
+
+-- สวิตช์เปิด/ปิด (Toggle)
+MainTab:AddToggle({
+    Name = "Auto Farm (Toggle Example)",
+    Default = false,
+    Callback = function(Value)
+        print("Auto Farm Status:", Value)
+    end    
+})
+
+-- ==========================================
+-- TAB 2: PLAYER (ปรับค่าตัวละคร)
+-- ==========================================
+local PlayerTab = Window:MakeTab({
+    Name = "Player",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+PlayerTab:AddSection({
+    Name = "Movement & Abilities"
+})
+
+-- สไลเดอร์ปรับความเร็ว (Slider WalkSpeed)
+PlayerTab:AddSlider({
+    Name = "WalkSpeed",
+    Min = 16,
+    Max = 250,
+    Default = 16,
+    Color = Color3.fromRGB(255,255,255),
+    Increment = 1,
+    ValueName = "Speed",
+    Callback = function(Value)
+        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+        end
+    end    
+})
+
+-- สไลเดอร์ปรับระยะกระโดด (Slider JumpPower)
+PlayerTab:AddSlider({
+    Name = "JumpPower",
+    Min = 50,
+    Max = 300,
+    Default = 50,
+    Color = Color3.fromRGB(255,255,255),
+    Increment = 1,
+    ValueName = "Power",
+    Callback = function(Value)
+        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+        end
+    end    
+})
+
+-- สวิตช์เดินทะลุกำแพง (Noclip Toggle)
+local Noclip = false
+game:GetService("RunService").Stepped:Connect(function()
+    if Noclip and game.Players.LocalPlayer.Character then
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = false
+            end
+        end
+    end
+end)
+
+PlayerTab:AddToggle({
+    Name = "Noclip (เดินทะลุกำแพง)",
+    Default = false,
+    Callback = function(Value)
+        Noclip = Value
+    end    
+})
+
+-- ==========================================
+-- TAB 3: TELEPORT & SCRIPTS (วาร์ปและโหลดสคริปต์ภายนอก)
+-- ==========================================
+local UtilityTab = Window:MakeTab({
+    Name = "Utilities",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+UtilityTab:AddSection({
+    Name = "External Scripts"
+})
+
+-- ปุ่มเรียกใช้สคริปต์บิน (Fly Script)
+UtilityTab:AddButton({
+    Name = "Load Fly Script (สคริปต์บิน)",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEQUAL/Fly-Script/main/script.lua"))()
+        OrionLib:MakeNotification({
+            Name = "Fly Loaded",
+            Content = "โหลดสคริปต์บินสำเร็จ!",
+            Time = 3
+        })
+    end    
+})
+
+-- ปุ่มเรียกใช้ Infinite Yield (สคริปต์แอดมินยอดนิยม)
+UtilityTab:AddButton({
+    Name = "Load Infinite Yield (Admin Commands)",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end    
+})
+
+-- เริ่มต้นการทำงานของ UI
+OrionLib:Init()
